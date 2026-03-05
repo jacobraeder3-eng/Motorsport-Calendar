@@ -3,7 +3,7 @@ name: Update motorsport calendar
 on:
   schedule:
     - cron: "0 14 * * *"
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 permissions:
   contents: write
@@ -11,7 +11,6 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
