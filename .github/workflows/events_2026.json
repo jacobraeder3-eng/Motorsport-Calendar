@@ -1,0 +1,19 @@
+{
+  "events": [
+    { "title": "IMSA — Road America (Race Weekend)", "start": "2026-07-30", "end_exclusive": "2026-08-03", "location": "Road America, Elkhart Lake, WI" },
+    { "title": "Road America — IndyCar Grand Prix", "start": "2026-06-18", "end_exclusive": "2026-06-22", "location": "Road America, Elkhart Lake, WI" },
+    { "title": "Road America — MotoAmerica Superbikes & Vintage MotoFest", "start": "2026-05-29", "end_exclusive": "2026-06-01", "location": "Road America, Elkhart Lake, WI" },
+    { "title": "Road America — SCCA June Sprints", "start": "2026-06-05", "end_exclusive": "2026-06-08", "location": "Road America, Elkhart Lake, WI" },
+    { "title": "Road America — WeatherTech Vintage Weekend", "start": "2026-07-16", "end_exclusive": "2026-07-20", "location": "Road America, Elkhart Lake, WI" },
+    { "title": "Road America — GT World Challenge America", "start": "2026-08-28", "end_exclusive": "2026-08-31", "location": "Road America, Elkhart Lake, WI" },
+    { "title": "Road America — SCCA National Championship Runoffs", "start": "2026-10-01", "end_exclusive": "2026-10-05", "location": "Road America, Elkhart Lake, WI" },
+
+    { "title": "F2 — Melbourne (Race Weekend)", "start": "2026-03-06", "end_exclusive": "2026-03-09", "location": "Albert Park Circuit, Melbourne, Australia" },
+    { "title": "F2 — Bahrain (Race Weekend)", "start": "2026-04-10", "end_exclusive": "2026-04-13", "location": "Bahrain International Circuit, Sakhir, Bahrain" },
+
+    { "title": "IMSA — Rolex 24 at Daytona (Race Weekend)", "start": "2026-01-22", "end_exclusive": "2026-01-26", "location": "Daytona International Speedway, Daytona Beach, FL" },
+    { "title": "IMSA — 12 Hours of Sebring (Race Weekend)", "start": "2026-03-19", "end_exclusive": "2026-03-23", "location": "Sebring International Raceway, Sebring, FL" },
+
+    { "title": "WEC — Le Mans 24H (Race Weekend)", "start": "2026-06-10", "end_exclusive": "2026-06-15", "location": "Circuit de la Sarthe, Le Mans, France" }
+  ]
+}
