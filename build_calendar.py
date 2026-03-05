@@ -5,13 +5,15 @@ from datetime import datetime
 
 UA = {"User-Agent": "motorsport-calendar-bot/1.0"}
 
-# Add sources that return an ICS or contain an ICS link in the HTML.
-# iOS will display times in America/Chicago automatically.
+# These pages either:
+#  - return an .ics directly, OR
+#  - contain an .ics link we can follow.
 SOURCES = {
     "F1": "https://calendar.formula1.com/",
     "F2": "https://calendar.fiaformula2.com/",
-    # IMSA: you will add your IMSA eCal iCal feed URL here (one-time setup).
-    # "IMSA": "https://...your-imsa-ecal-feed...ics",
+    # IMSA + WEC: see below (need a stable ICS feed link)
+    # "IMSA": "https://<your-imsa-ics-feed>.ics",
+    # "WEC":  "https://<your-wec-ics-feed>.ics",
 }
 
 def find_ics_urls(html: str) -> list[str]:
@@ -25,14 +27,14 @@ def download_text(url: str) -> str:
     r.raise_for_status()
     return r.text
 
-def download_ics_from_source(name: str, url: str) -> str | None:
+def get_ics(name: str, url: str) -> str | None:
     text = download_text(url)
 
-    # Direct ICS
+    # If the URL returns an ICS directly
     if "BEGIN:VCALENDAR" in text:
         return text
 
-    # HTML containing ICS link(s)
+    # Otherwise, find .ics link(s) in the HTML and try them
     for ics_url in find_ics_urls(text):
         try:
             ics = download_text(ics_url)
@@ -41,7 +43,7 @@ def download_ics_from_source(name: str, url: str) -> str | None:
         except Exception:
             pass
 
-    print(f"[WARN] Could not find ICS for {name} from {url}")
+    print(f"[WARN] No ICS found for {name} from {url}")
     return None
 
 def extract_vevents(ics: str) -> list[str]:
@@ -50,28 +52,25 @@ def extract_vevents(ics: str) -> list[str]:
     for p in parts[1:]:
         if "END:VEVENT" not in p:
             continue
-        ve = "BEGIN:VEVENT" + p.split("END:VEVENT", 1)[0] + "END:VEVENT"
-        blocks.append(ve.strip())
+        blocks.append(("BEGIN:VEVENT" + p.split("END:VEVENT", 1)[0] + "END:VEVENT").strip())
     return blocks
 
 def main():
     all_events = []
-    seen_uids = set()
+    seen = set()
 
     for name, url in SOURCES.items():
-        ics = download_ics_from_source(name, url)
+        ics = get_ics(name, url)
         if not ics:
             continue
 
         for ve in extract_vevents(ics):
+            # de-dupe by UID when present
             m = re.search(r"\nUID:(.+)\n", "\n" + ve + "\n")
-            uid = (name + ":" + m.group(1).strip()) if m else None
-
-            if uid and uid in seen_uids:
+            key = (name, m.group(1).strip()) if m else (name, ve)
+            if key in seen:
                 continue
-            if uid:
-                seen_uids.add(uid)
-
+            seen.add(key)
             all_events.append(ve)
 
     out = []
@@ -80,7 +79,7 @@ def main():
     out.append("PRODID:-//Motorsport Feed (Merged)//EN")
     out.append("CALSCALE:GREGORIAN")
     out.append("METHOD:PUBLISH")
-    out.append("X-WR-CALNAME:Motorsport (All Sessions, Chicago)")
+    out.append("X-WR-CALNAME:Motorsport (All Sessions)")
     out.append(f"X-WR-CALDESC:Auto-generated {datetime.utcnow().strftime('%Y-%m-%d %H:%MZ')}")
     out.extend(all_events)
     out.append("END:VCALENDAR")
